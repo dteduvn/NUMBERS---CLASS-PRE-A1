@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>D&T Academy – Numbers Fun! 🔢</title>
+<style>
+  :root {
+    --yellow: #FFD93D; --yellow-light: #FFF5C0; --yellow-dark: #E6A817;
+    --green: #6BCB77; --green-light: #E8F9EA; --green-dark: #3A8C44;
+    --blue: #4D96FF; --blue-light: #E3F0FF; --blue-dark: #1A5CB5;
+    --pink: #FF6B9D; --pink-light: #FFE8F2; --pink-dark: #CC3D70;
+    --purple: #9B5DE5; --purple-light: #F0E8FF; --purple-dark: #6B2DB5;
+    --orange: #FF9F43; --orange-light: #FFF3E0; --orange-dark: #CC7000;
+    --red: #FF6B6B; --red-light: #FFE8E8; --red-dark: #CC2B2B;
+    --white: #FFFFFF; --bg: #FFFBF0; --text: #2C2C54;
+    --radius: 20px; --shadow: 0 8px 30px rgba(0,0,0,0.12);
+    --shadow-hover: 0 12px 40px rgba(0,0,0,0.2);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', 'Comic Sans MS', Tahoma, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; -webkit-tap-highlight-color: transparent; }
+
+  .header { background: linear-gradient(135deg, #4D96FF 0%, #9B5DE5 50%, #FF6B9D 100%); padding: 20px; text-align: center; position: relative; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+  .header::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(45deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 10px, transparent 10px, transparent 20px); }
+  .header h1 { font-size: 2.2rem; color: white; text-shadow: 3px 3px 0 rgba(0,0,0,0.2); position: relative; z-index: 1; }
+  .header p { color: rgba(255,255,255,0.95); font-size: 1rem; margin-top: 6px; position: relative; z-index: 1; }
+  .stars { font-size: 1.4rem; position: relative; z-index: 1; }
+
+  .tab-bar { display: flex; overflow-x: auto; background: white; border-bottom: 3px solid #4D96FF; padding: 0 10px; gap: 4px; scrollbar-width: none; }
+  .tab-bar::-webkit-scrollbar { display: none; }
+  .tab-btn { padding: 12px 16px; border: none; background: none; cursor: pointer; font-size: 0.85rem; font-weight: 700; color: #888; white-space: nowrap; border-bottom: 4px solid transparent; transition: all 0.3s; border-radius: 10px 10px 0 0; }
+  .tab-btn.active { color: var(--text); border-bottom-color: var(--blue); background: var(--blue-light); }
+  .tab-btn:hover { background: #f5f5f5; }
+
+  .tab-content { display: none; padding: 20px; max-width: 900px; margin: 0 auto; }
+  .tab-content.active { display: block; }
+
+  .section-title { text-align: center; font-size: 1.6rem; font-weight: 800; margin-bottom: 8px; }
+  .section-sub { text-align: center; color: #666; font-size: 0.9rem; margin-bottom: 24px; }
+
+  .badge { display: inline-block; padding: 4px 14px; border-radius: 50px; font-size: 0.75rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 16px; }
+  .badge.easy { background: var(--green-light); color: var(--green-dark); }
+  .badge.medium { background: var(--orange-light); color: var(--orange-dark); }
+  .badge.hard { background: var(--red-light); color: var(--red-dark); }
+
+  /* NUMBER GRID */
+  .num-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .num-card { background: white; border-radius: 18px; padding: 14px 6px; text-align: center; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 3px solid transparent; user-select: none; }
+  .num-card:hover { transform: translateY(-5px) scale(1.04); box-shadow: var(--shadow-hover); }
+  .num-card:active { transform: scale(0.96); }
+  .num-card .big-num { font-size: 2.4rem; font-weight: 900; color: var(--blue-dark); display: block; line-height: 1; }
+  .num-card .dots { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px; margin-top: 8px; max-width: 80px; margin-left: auto; margin-right: auto; }
+  .num-card .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--pink); }
+  .num-card .word { font-size: 0.75rem; font-weight: 700; color: #888; margin-top: 6px; }
+  .num-card.playing { border-color: var(--yellow); background: var(--yellow-light); animation: pulse 0.5s ease; }
+  @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+
+  .play-all-btn { display: block; margin: 0 auto 24px; padding: 14px 40px; background: linear-gradient(135deg, var(--blue), var(--purple)); color: white; border: none; border-radius: 50px; font-size: 1.1rem; font-weight: 800; cursor: pointer; box-shadow: 0 6px 20px rgba(77,150,255,0.4); transition: all 0.3s; }
+  .play-all-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(77,150,255,0.5); }
+
+  /* FLASHCARD */
+  .flashcard-area { max-width: 380px; margin: 0 auto; }
+  .flashcard { width: 100%; height: 260px; perspective: 1000px; cursor: pointer; margin-bottom: 20px; }
+  .flashcard-inner { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.7s cubic-bezier(0.4,0,0.2,1); }
+  .flashcard.flipped .flashcard-inner { transform: rotateY(180deg); }
+  .flashcard-front, .flashcard-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: var(--shadow); }
+  .flashcard-front { background: linear-gradient(135deg, #4D96FF, #9B5DE5); }
+  .flashcard-back { background: linear-gradient(135deg, #6BCB77, #FFD93D); transform: rotateY(180deg); }
+  .flashcard-front .card-num { font-size: 6rem; font-weight: 900; line-height: 1; color: white; text-shadow: 3px 3px 0 rgba(0,0,0,0.15); }
+  .flashcard-front .hint { font-size: 0.85rem; color: rgba(255,255,255,0.8); margin-top: 12px; }
+  .flashcard-back .card-dots { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; max-width: 220px; margin-bottom: 10px; }
+  .flashcard-back .card-dot { width: 22px; height: 22px; border-radius: 50%; background: var(--pink-dark); }
+  .flashcard-back .card-word { font-size: 1.6rem; font-weight: 900; color: var(--purple-dark); text-shadow: none; }
+  .fc-controls { display: flex; gap: 12px; justify-content: center; }
+  .fc-btn { padding: 12px 28px; border: none; border-radius: 50px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+  .fc-btn.prev { background: #EEE; color: #555; }
+  .fc-btn.next { background: var(--yellow); color: var(--text); }
+  .fc-btn:hover { transform: scale(1.05); }
+  .fc-progress { text-align: center; font-size: 0.9rem; color: #888; margin-bottom: 16px; }
+  .progress-bar-wrap { background: #EEE; border-radius: 10px; height: 10px; margin-bottom: 20px; }
+  .progress-bar-fill { height: 100%; border-radius: 10px; background: linear-gradient(90deg, var(--green), var(--blue)); transition: width 0.5s ease; }
+
+  /* MATCH */
+  .match-area { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .match-col { display: flex; flex-direction: column; gap: 10px; }
+  .match-item { padding: 16px; border-radius: 16px; cursor: pointer; font-size: 1.6rem; font-weight: 800; text-align: center; border: 3px solid #EEE; background: white; transition: all 0.25s; box-shadow: 0 3px 10px rgba(0,0,0,0.08); }
+  .match-item:hover { transform: scale(1.04); border-color: var(--blue); }
+  .match-item.selected { border-color: var(--yellow); background: var(--yellow-light); transform: scale(1.04); }
+  .match-item.matched { border-color: var(--green); background: var(--green-light); color: var(--green-dark); cursor: default; animation: matchPop 0.4s ease; }
+  .match-item.wrong { border-color: var(--red); background: var(--red-light); animation: shake 0.4s ease; }
+  .match-dots { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; }
+  .match-dots .dot { width: 12px; height: 12px; border-radius: 50%; background: var(--pink); }
+  @keyframes matchPop { 0%{transform:scale(1)} 50%{transform:scale(1.15)} 100%{transform:scale(1)} }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
+
+  /* BALLOON POP */
+  .balloon-area { min-height: 400px; position: relative; overflow: hidden; background: linear-gradient(180deg, #87CEEB 0%, #E0F4FF 100%); border-radius: 20px; margin-bottom: 16px; border: 3px solid var(--blue-light); }
+  .balloon-question { text-align: center; padding: 14px; background: rgba(255,255,255,0.9); border-radius: 16px; margin: 12px; font-size: 1.1rem; font-weight: 700; }
+  .balloon-question .q-big { font-size: 3.5rem; display: block; font-weight: 900; color: var(--blue-dark); }
+  .balloon { position: absolute; cursor: pointer; transition: transform 0.2s; user-select: none; animation: float linear infinite; text-align: center; }
+  .balloon:hover { transform: scale(1.12); }
+  .balloon .b-body { font-size: 3.5rem; display: block; filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.2)); }
+  .balloon .b-label { font-size: 1.4rem; font-weight: 900; color: #333; background: rgba(255,255,255,0.95); border-radius: 10px; padding: 3px 12px; margin-top: -8px; display: block; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
+  .balloon.popped { animation: pop 0.4s ease forwards; pointer-events: none; }
+  @keyframes float { 0%{transform:translateY(0) rotate(-3deg)} 50%{transform:translateY(-18px) rotate(3deg)} 100%{transform:translateY(0) rotate(-3deg)} }
+  @keyframes pop { 0%{transform:scale(1);opacity:1} 50%{transform:scale(1.6);opacity:0.7} 100%{transform:scale(0);opacity:0} }
+  .balloon-score { position: absolute; top: 10px; right: 14px; background: var(--yellow); border-radius: 50px; padding: 6px 16px; font-weight: 800; font-size: 0.9rem; }
+
+  /* TAP THE NUMBER */
+  .numtap-area { text-align: center; }
+  .numtap-question { font-size: 1.1rem; font-weight: 700; padding: 14px; background: var(--yellow-light); border-radius: 16px; margin-bottom: 20px; }
+  .hear-btn { display: inline-flex; align-items: center; gap: 6px; margin-left: 10px; padding: 8px 16px; border: none; border-radius: 50px; background: var(--blue); color: white; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: all 0.2s; vertical-align: middle; }
+  .hear-btn:hover { background: var(--blue-dark); transform: scale(1.05); }
+  .hear-btn:active { transform: scale(0.95); }
+  .numtap-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; max-width: 420px; margin: 0 auto; }
+  .numtap-item { padding: 18px 8px; border-radius: 16px; background: white; border: 3px solid #EEE; cursor: pointer; transition: all 0.25s; box-shadow: 0 3px 10px rgba(0,0,0,0.08); text-align: center; }
+  .numtap-item:hover { border-color: var(--blue); transform: scale(1.06); }
+  .numtap-item .ni-num { font-size: 1.8rem; font-weight: 900; color: var(--blue-dark); }
+  .numtap-item.correct-ans { border-color: var(--green) !important; background: var(--green-light); animation: matchPop 0.5s; }
+  .numtap-item.wrong-ans { border-color: var(--red) !important; background: var(--red-light); animation: shake 0.4s; }
+
+  /* COUNT THE DOTS */
+  .count-area { text-align: center; }
+  .count-display { background: white; border-radius: 20px; padding: 24px; box-shadow: var(--shadow); margin-bottom: 20px; max-width: 380px; margin-left: auto; margin-right: auto; }
+  .count-emojis { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; min-height: 100px; align-items: center; }
+  .count-emojis .ce { font-size: 2.6rem; animation: popIn 0.3s ease backwards; }
+  @keyframes popIn { 0%{transform:scale(0)} 100%{transform:scale(1)} }
+  .count-options { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; max-width: 420px; margin: 16px auto 0; }
+  .count-opt { padding: 16px 6px; border-radius: 14px; border: 3px solid #EEE; background: white; cursor: pointer; font-size: 1.6rem; font-weight: 900; color: var(--blue-dark); transition: all 0.2s; }
+  .count-opt:hover { border-color: var(--blue); }
+  .count-opt.correct { border-color: var(--green) !important; background: var(--green-light) !important; color: var(--green-dark); animation: matchPop 0.5s; }
+  .count-opt.wrong { border-color: var(--red) !important; background: var(--red-light) !important; animation: shake 0.4s; }
+
+  /* NUMBER ORDER */
+  .order-area { text-align: center; }
+  .order-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 24px; min-height: 90px; }
+  .order-slot { width: 70px; height: 80px; border-radius: 16px; border: 3px dashed #DDD; background: white; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; font-weight: 900; color: var(--blue-dark); transition: all 0.3s; }
+  .order-slot.filled { border-style: solid; border-color: var(--green); background: var(--green-light); color: var(--green-dark); }
+  .order-bank { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 16px; }
+  .order-tile { width: 70px; height: 80px; border-radius: 16px; background: white; border: 3px solid var(--blue); color: var(--blue-dark); display: flex; align-items: center; justify-content: center; font-size: 2.2rem; font-weight: 900; cursor: pointer; transition: all 0.25s; box-shadow: 0 3px 10px rgba(0,0,0,0.08); }
+  .order-tile:hover { transform: translateY(-4px) scale(1.05); }
+  .order-tile.used { opacity: 0.2; pointer-events: none; }
+  .order-feedback { font-size: 1.2rem; font-weight: 800; min-height: 32px; margin-bottom: 12px; }
+
+  /* TRACE */
+  .trace-area { max-width: 420px; margin: 0 auto; text-align: center; }
+  .trace-display { font-size: 7rem; font-weight: 900; line-height: 1; margin-bottom: 8px; color: var(--blue-dark); }
+  .trace-dots { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; max-width: 220px; margin: 0 auto 8px; }
+  .trace-dots .dot { width: 18px; height: 18px; border-radius: 50%; background: var(--pink); }
+  .trace-word { font-size: 1.3rem; font-weight: 800; color: var(--purple-dark); margin-bottom: 20px; }
+  .trace-canvas-wrap { background: white; border-radius: 20px; padding: 16px; box-shadow: var(--shadow); margin-bottom: 16px; }
+  canvas#traceCanvas { border: 3px dashed #DDD; border-radius: 14px; touch-action: none; width: 100%; max-width: 320px; height: 320px; background: #FAFAFA; }
+
+  /* COMPARE GAME (more/less) */
+  .compare-area { text-align: center; }
+  .compare-row { display: flex; justify-content: center; gap: 24px; margin-bottom: 20px; flex-wrap: wrap; }
+  .compare-box { background: white; border-radius: 18px; padding: 16px; box-shadow: var(--shadow); cursor: pointer; transition: all 0.25s; border: 3px solid transparent; min-width: 140px; }
+  .compare-box:hover { transform: translateY(-4px); border-color: var(--blue); }
+  .compare-box.correct-ans { border-color: var(--green) !important; background: var(--green-light); animation: matchPop 0.5s; }
+  .compare-box.wrong-ans { border-color: var(--red) !important; background: var(--red-light); animation: shake 0.4s; }
+  .compare-box .ce-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; min-height: 70px; align-items: center; margin-bottom: 6px; }
+  .compare-box .ce-row .ce { font-size: 2.2rem; }
+  .compare-box .cb-num { font-size: 1.4rem; font-weight: 900; color: var(--blue-dark); }
+
+  /* QUIZ */
+  .quiz-area { max-width: 560px; margin: 0 auto; }
+  .quiz-q { background: white; border-radius: 20px; padding: 22px; box-shadow: var(--shadow); margin-bottom: 18px; }
+  .quiz-q-num { font-size: 0.78rem; font-weight: 700; color: #999; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+  .quiz-q-text { font-size: 1.1rem; font-weight: 700; line-height: 1.5; text-align: center; }
+  .quiz-q-big { font-size: 4.5rem; font-weight: 900; display: block; margin: 8px 0; color: var(--blue-dark); }
+  .quiz-q-dots { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin: 10px 0; }
+  .quiz-q-dots .dot { width: 18px; height: 18px; border-radius: 50%; background: var(--pink); }
+  .quiz-options { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .quiz-opt { padding: 16px 6px; border-radius: 14px; border: 2px solid #EEE; background: white; cursor: pointer; font-size: 1.6rem; font-weight: 800; transition: all 0.2s; text-align: center; color: var(--blue-dark); }
+  .quiz-opt:hover { border-color: var(--blue); background: var(--blue-light); }
+  .quiz-opt.correct { border-color: var(--green) !important; background: var(--green-light) !important; color: var(--green-dark); }
+  .quiz-opt.incorrect { border-color: var(--red) !important; background: var(--red-light) !important; color: var(--red-dark); animation: shake 0.4s; }
+  .quiz-result { text-align: center; padding: 30px; background: white; border-radius: 24px; box-shadow: var(--shadow); }
+  .quiz-result .score-big { font-size: 4rem; font-weight: 900; color: var(--green-dark); }
+  .quiz-result .msg { font-size: 1.2rem; margin: 10px 0; }
+  .quiz-restart { margin-top: 16px; padding: 12px 32px; background: var(--yellow); border: none; border-radius: 50px; font-size: 1rem; font-weight: 700; cursor: pointer; }
+
+  /* MEMORY */
+  .memory-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; max-width: 480px; margin: 0 auto 16px; }
+  .memory-card { aspect-ratio: 1; border-radius: 14px; cursor: pointer; perspective: 600px; }
+  .memory-inner { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.5s; }
+  .memory-card.flipped .memory-inner { transform: rotateY(180deg); }
+  .memory-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; font-weight: 900; box-shadow: 0 3px 10px rgba(0,0,0,0.1); }
+  .memory-front { background: linear-gradient(135deg, var(--purple), var(--blue)); color: white; font-size: 2.2rem; }
+  .memory-back { background: white; transform: rotateY(180deg); border: 3px solid var(--green); color: var(--blue-dark); }
+  .memory-back.dotsface { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 3px; padding: 6px; }
+  .memory-back.dotsface .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--pink); }
+  .memory-card.matched .memory-face.memory-back { border-color: var(--green); background: var(--green-light); }
+
+  /* SCORE */
+  .score-bar { display: flex; align-items: center; gap: 12px; background: white; border-radius: 50px; padding: 10px 20px; margin-bottom: 20px; box-shadow: 0 3px 12px rgba(0,0,0,0.1); }
+  .score-bar .score-num { font-weight: 800; font-size: 1.1rem; color: var(--green-dark); }
+  .score-bar .stars-earned { font-size: 1.3rem; letter-spacing: 2px; flex: 1; }
+  .score-bar .reset-btn { padding: 6px 16px; border-radius: 50px; border: 2px solid #EEE; background: none; cursor: pointer; font-size: 0.8rem; font-weight: 600; color: #888; transition: all 0.2s; }
+  .score-bar .reset-btn:hover { border-color: var(--red); color: var(--red-dark); }
+
+  .celebration { position: fixed; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; z-index: 1000; }
+  .confetti-piece { position: absolute; width: 10px; height: 10px; border-radius: 2px; animation: confettiFall linear forwards; }
+  @keyframes confettiFall { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(100vh) rotate(720deg);opacity:0} }
+
+  .btn-restart { display: block; margin: 20px auto 0; padding: 12px 32px; border-radius: 50px; background: var(--yellow); border: none; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 15px rgba(255,217,61,0.5); }
+  .btn-restart:hover { transform: scale(1.05); }
+  .btn-secondary { background: #EEE; color: #555; box-shadow: none; }
+
+  @media(max-width:500px) {
+    .header h1 { font-size: 1.5rem; }
+    .num-grid { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .quiz-options { grid-template-columns: repeat(2, 1fr); }
+    .memory-grid { grid-template-columns: repeat(4, 1fr); }
+    .order-slot, .order-tile { width: 50px; height: 64px; font-size: 1.6rem; }
+    .numtap-grid, .count-options { grid-template-columns: repeat(4, 1fr); }
+    .compare-row { gap: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="stars">⭐ 🌟 ⭐</div>
+  <h1>🔢 D&T Academy Numbers Fun!</h1>
+  <p>Pre-A1 · 1 to 20 · Học số đếm qua trò chơi</p>
+</div>
+
+<div style="padding:14px 20px 0; max-width:900px; margin:0 auto;">
+  <div class="score-bar">
+    <span>⭐ Score:</span>
+    <span class="score-num" id="globalScore">0</span>
+    <span class="stars-earned" id="globalStars"></span>
+    <button class="reset-btn" onclick="resetScore()">Reset</button>
+  </div>
+</div>
+
+<div class="tab-bar" id="tabBar">
+  <button class="tab-btn active" onclick="showTab('listen',this)">🔊 Number Song</button>
+  <button class="tab-btn" onclick="showTab('flashcard',this)">🃏 Flashcards</button>
+  <button class="tab-btn" onclick="showTab('count',this)">🍎 Count the Dots</button>
+  <button class="tab-btn" onclick="showTab('balloon',this)">🎈 Balloon Pop</button>
+  <button class="tab-btn" onclick="showTab('tap',this)">👆 Tap the Number</button>
+  <button class="tab-btn" onclick="showTab('match',this)">🔗 Match It!</button>
+  <button class="tab-btn" onclick="showTab('compare',this)">⚖️ More or Less</button>
+  <button class="tab-btn" onclick="showTab('memory',this)">🧠 Memory Game</button>
+  <button class="tab-btn" onclick="showTab('order',this)">🔢 Number Order</button>
+  <button class="tab-btn" onclick="showTab('trace',this)">✏️ Trace It</button>
+  <button class="tab-btn" onclick="showTab('quiz',this)">🧩 Quiz Time</button>
+</div>
+
+<div id="tab-listen" class="tab-content active">
+  <div class="section-title">🔊 Number Song</div>
+  <p class="section-sub">Nhấn vào số để nghe · Tap a number to hear it!</p>
+  <span class="badge easy">⭐ Easy – Bắt đầu ở đây!</span>
+
+  <button class="play-all-btn" onclick="playAll()">▶️ Count 1 to 20!</button>
+  <button class="play-all-btn" style="background:linear-gradient(135deg,#9B5DE5,#FF6B9D); margin-top:-10px;" onclick="playAll(true)">🐢 Slow Mode</button>
+
+  <div class="num-grid" id="numGrid"></div>
+</div>
+
+<div id="tab-flashcard" class="tab-content">
+  <div class="section-title">🃏 Flashcards</div>
+  <p class="section-sub">Nhấn vào thẻ để lật · Tap to flip!</p>
+  <span class="badge easy">⭐ Easy</span>
+  <div class="flashcard-area">
+    <div class="fc-progress" id="fcProgress">Card 1 / 20</div>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="fcBar" style="width:5%"></div></div>
+    <div class="flashcard" id="flashcard" onclick="flipCard()">
+      <div class="flashcard-inner">
+        <div class="flashcard-front">
+          <span class="card-num" id="fcNum">1</span>
+          <span class="hint">Tap to see!</span>
+        </div>
+        <div class="flashcard-back">
+          <div class="card-dots" id="fcDots"></div>
+          <span class="card-word" id="fcWord">one</span>
+        </div>
+      </div>
+    </div>
+    <div class="fc-controls">
+      <button class="fc-btn prev" onclick="fcNav(-1)">← Prev</button>
+      <button class="fc-btn" style="background:var(--blue);color:white;" onclick="speakNum(numData[fcIdx])">🔊</button>
+      <button class="fc-btn next" onclick="fcNav(1)">Next →</button>
+    </div>
+  </div>
+</div>
+
+<div id="tab-count" class="tab-content">
+  <div class="section-title">🍎 Count the Dots!</div>
+  <p class="section-sub">Đếm hình và chọn số đúng · Count and pick the right number!</p>
+  <span class="badge easy">⭐ Easy</span>
+  <div class="count-area">
+    <div class="count-display">
+      <div class="count-emojis" id="countEmojis"></div>
+    </div>
+    <div style="text-align:center;margin:8px 0;"><button class="hear-btn" onclick="replayCount()">🔊 Hear again</button></div>
+    <div class="count-options" id="countOptions"></div>
+    <div style="text-align:center;margin-top:14px;font-size:1rem;font-weight:700;" id="countFeedback"></div>
+    <div style="text-align:center;margin-top:8px;font-size:0.9rem;color:#888;">Score: <strong id="countScore">0</strong> / 10</div>
+  </div>
+  <button class="btn-restart" onclick="initCount()">🔄 New Round</button>
+</div>
+
+<div id="tab-balloon" class="tab-content">
+  <div class="section-title">🎈 Balloon Pop!</div>
+  <p class="section-sub">Bấm vào quả bóng có đúng số · Pop the matching number!</p>
+  <span class="badge easy">⭐ Easy</span>
+  <div class="balloon-area" id="balloonArea">
+    <div class="balloon-question" id="balloonQ">
+      Find: <span class="q-big" id="bqNum">1</span>
+    </div>
+    <div class="balloon-score">🎯 <span id="balloonScore">0</span>/10</div>
+  </div>
+  <button class="btn-restart" onclick="initBalloon()">🔄 Restart</button>
+</div>
+
+<div id="tab-tap" class="tab-content">
+  <div class="section-title">👆 Tap the Number!</div>
+  <p class="section-sub">Nghe và bấm đúng số · Listen & tap the right number!</p>
+  <span class="badge easy">⭐ Easy – Nhận biết số</span>
+  <div class="numtap-area">
+    <div class="numtap-question" id="numtapQ">
+      Listen carefully! 🔊
+      <button class="hear-btn" onclick="replayNumtap()">🔊 Hear again</button>
+    </div>
+    <div class="numtap-grid" id="numtapGrid"></div>
+    <div style="text-align:center;margin-top:16px;font-size:1rem;font-weight:700;" id="ntFeedback"></div>
+    <div style="text-align:center;margin-top:8px;font-size:0.9rem;color:#888;">Score: <strong id="ntScore">0</strong> / 10</div>
+  </div>
+  <button class="btn-restart" onclick="initNumtap()">🔄 New Round</button>
+</div>
+
+<div id="tab-match" class="tab-content">
+  <div class="section-title">🔗 Match It!</div>
+  <p class="section-sub">Nối số với số chấm tròn · Match number with dots!</p>
+  <span class="badge medium">⭐⭐ Medium</span>
+  <div id="matchResult" style="display:none;text-align:center;padding:20px;font-size:1.3rem;font-weight:800;"></div>
+  <div class="match-area" id="matchArea"></div>
+  <button class="btn-restart" onclick="initMatch()">🔄 New Round</button>
+</div>
+
+<div id="tab-compare" class="tab-content">
+  <div class="section-title">⚖️ More or Less!</div>
+  <p class="section-sub">Bấm vào ô có NHIỀU hơn hoặc ÍT hơn · Tap the box with more / less!</p>
+  <span class="badge medium">⭐⭐ Medium</span>
+  <div class="compare-area">
+    <div class="numtap-question">
+      <span id="compareQ">Which has MORE? 🤔</span>
+      <button class="hear-btn" onclick="replayCompare()">🔊 Hear again</button>
+    </div>
+    <div class="compare-row" id="compareRow"></div>
+    <div style="text-align:center;margin-top:14px;font-size:1rem;font-weight:700;" id="compareFeedback"></div>
+    <div style="text-align:center;margin-top:8px;font-size:0.9rem;color:#888;">Score: <strong id="compareScore">0</strong> / 10</div>
+  </div>
+  <button class="btn-restart" onclick="initCompare()">🔄 New Round</button>
+</div>
+
+<div id="tab-memory" class="tab-content">
+  <div class="section-title">🧠 Memory Game</div>
+  <p class="section-sub">Lật 2 thẻ giống nhau · Flip 2 matching cards!</p>
+  <span class="badge medium">⭐⭐ Medium</span>
+  <div style="text-align:center;margin-bottom:12px;font-size:0.9rem;color:#888;">Moves: <strong id="memMoves">0</strong> · Pairs: <strong id="memPairs">0</strong>/8</div>
+  <div class="memory-grid" id="memoryGrid"></div>
+  <button class="btn-restart" onclick="initMemory()">🔄 New Game</button>
+</div>
+
+<div id="tab-order" class="tab-content">
+  <div class="section-title">🔢 Number Order!</div>
+  <p class="section-sub">Sắp xếp các số theo thứ tự · Put numbers in order!</p>
+  <span class="badge medium">⭐⭐ Medium</span>
+  <div class="order-area">
+    <button class="hear-btn" style="margin:0 auto 16px;display:inline-flex;" onclick="playOrderSequence()">🔊 Hear the order</button>
+    <div class="order-row" id="orderSlots"></div>
+    <div class="order-feedback" id="orderFeedback"></div>
+    <div class="order-bank" id="orderBank"></div>
+  </div>
+  <button class="btn-restart" onclick="initOrder()">🔄 New Round</button>
+</div>
+
+<div id="tab-trace" class="tab-content">
+  <div class="section-title">✏️ Trace It!</div>
+  <p class="section-sub">Dùng tay vẽ theo nét số · Trace the number with your finger!</p>
+  <span class="badge medium">⭐⭐ Medium – Luyện viết</span>
+  <div class="trace-area">
+    <span class="trace-display" id="traceDisplay">1</span>
+    <div class="trace-dots" id="traceDots"></div>
+    <div class="trace-word" id="traceWord">one</div>
+    <div class="trace-canvas-wrap">
+      <canvas id="traceCanvas" width="320" height="320"></canvas>
+    </div>
+    <div class="fc-controls">
+      <button class="fc-btn prev" onclick="traceNav(-1)">← Prev</button>
+      <button class="fc-btn btn-secondary" onclick="clearTrace()">🧹 Clear</button>
+      <button class="fc-btn next" onclick="traceNav(1)">Next →</button>
+    </div>
+  </div>
+</div>
+
+<div id="tab-quiz" class="tab-content">
+  <div class="section-title">🧩 Quiz Time!</div>
+  <p class="section-sub">Thử sức với câu hỏi · Test your knowledge!</p>
+  <span class="badge medium">⭐⭐ Medium</span>
+  <div class="quiz-area" id="quizArea"></div>
+</div>
+
+<div class="celebration" id="celebration"></div>
+
+<script>
+const numData = [
+  { n: 1,  word: 'one' },
+  { n: 2,  word: 'two' },
+  { n: 3,  word: 'three' },
+  { n: 4,  word: 'four' },
+  { n: 5,  word: 'five' },
+  { n: 6,  word: 'six' },
+  { n: 7,  word: 'seven' },
+  { n: 8,  word: 'eight' },
+  { n: 9,  word: 'nine' },
+  { n: 10, word: 'ten' },
+  { n: 11, word: 'eleven' },
+  { n: 12, word: 'twelve' },
+  { n: 13, word: 'thirteen' },
+  { n: 14, word: 'fourteen' },
+  { n: 15, word: 'fifteen' },
+  { n: 16, word: 'sixteen' },
+  { n: 17, word: 'seventeen' },
+  { n: 18, word: 'eighteen' },
+  { n: 19, word: 'nineteen' },
+  { n: 20, word: 'twenty' },
+];
+
+const FRUITS = ['🍎','🍊','🍌','🍇','🍓','🍉','🥝','🍒','🍑','🍋'];
+
+// ===================== SESSION RESULTS TRACKING =====================
+let balloonTarget = null;
+const sessionResults = {
+  "Count": { max: 10, items: {} },
+  "Balloon Pop": { max: 10, items: {} },
+  "Tap the Number": { max: 10, items: {} },
+  "Match": { max: 6, items: {} },
+  "More or Less": { max: 10, items: {} },
+  "Memory": { max: 8, items: {} },
+  "Number Order": { max: 1, items: {} },
+  "Quiz": { max: 12, items: {} },
+};
+function recordResult(section, key, correct, studentAnswer, correctAnswer, question) {
+  const sec = sessionResults[section];
+  if (sec.items[key]) return;
+  sec.items[key] = { question, correct, studentAnswer, correctAnswer };
+}
+function collectSessionSections() {
+  const sections = [];
+  for (const [name, data] of Object.entries(sessionResults)) {
+    const details = Object.values(data.items);
+    const score = details.filter(d => d.correct).length;
+    sections.push({ name, score, max: data.max, details });
+  }
+  return sections;
+}
+
+function dotsHTML(n, max, cls) {
+  cls = cls || 'dot';
+  let h = '';
+  const count = Math.min(n, max || n);
+  for (let i = 0; i < count; i++) h += '<span class="' + cls + '"></span>';
+  return h;
+}
+
+let voices = [];
+window.speechSynthesis.onvoiceschanged = () => { voices = window.speechSynthesis.getVoices(); };
+setTimeout(() => { voices = window.speechSynthesis.getVoices(); }, 80);
+
+function speakRaw(text, rate) {
+  rate = rate || 0.72;
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  setTimeout(() => {
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-GB';
+    u.rate = rate;
+    u.pitch = 1.1;
+    const gb = voices.find(v => v.lang === 'en-GB');
+    const en = voices.find(v => v.lang.startsWith('en'));
+    if (gb) u.voice = gb;
+    else if (en) u.voice = en;
+    window.speechSynthesis.speak(u);
+  }, 80);
+}
+
+function speakNum(item, rate) {
+  speakRaw(item.word, rate || 0.72);
+}
+
+function speakQueue(texts, rate) {
+  rate = rate || 0.7;
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const gb = voices.find(v => v.lang === 'en-GB');
+  const en = voices.find(v => v.lang.startsWith('en'));
+  let i = 0;
+  function next() {
+    if (i >= texts.length) return;
+    const u = new SpeechSynthesisUtterance(texts[i]);
+    u.lang = 'en-GB';
+    u.rate = rate;
+    u.pitch = 1.1;
+    if (gb) u.voice = gb;
+    else if (en) u.voice = en;
+    u.onend = () => { i++; setTimeout(next, 250); };
+    window.speechSynthesis.speak(u);
+  }
+  setTimeout(next, 80);
+}
+
+function speakQueueWithHighlight(items, getText, getEl, rate) {
+  rate = rate || 0.7;
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  document.querySelectorAll('.playing').forEach(el => el.classList.remove('playing'));
+  const gb = voices.find(v => v.lang === 'en-GB');
+  const en = voices.find(v => v.lang.startsWith('en'));
+  let i = 0;
+  function next() {
+    if (i >= items.length) return;
+    const el = getEl(items[i], i);
+    if (el) el.classList.add('playing');
+    const u = new SpeechSynthesisUtterance(getText(items[i]));
+    u.lang = 'en-GB';
+    u.rate = rate;
+    u.pitch = 1.1;
+    if (gb) u.voice = gb;
+    else if (en) u.voice = en;
+    u.onend = () => {
+      if (el) el.classList.remove('playing');
+      i++; setTimeout(next, 200);
+    };
+    window.speechSynthesis.speak(u);
+  }
+  setTimeout(next, 80);
+}
+
+let score = 0;
+function addScore(pts) {
+  score += pts;
+  document.getElementById('globalScore').textContent = score;
+  const stars = '⭐'.repeat(Math.min(Math.floor(score/5), 10));
+  document.getElementById('globalStars').textContent = stars;
+}
+function resetScore() { score = 0; document.getElementById('globalScore').textContent = 0; document.getElementById('globalStars').textContent = ''; }
+
+function showTab(name, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  btn.classList.add('active');
+  if (name === 'trace') setTimeout(setupTraceCanvas, 50);
+}
+
+function shuffle(arr) { return [...arr].sort(() => Math.random()-0.5); }
+
+// ===================== TAB 1: NUMBER GRID =====================
+function buildNumGrid() {
+  const g = document.getElementById('numGrid');
+  g.innerHTML = '';
+  numData.forEach((item, i) => {
+    const card = document.createElement('div');
+    card.className = 'num-card';
+    card.id = 'nc-'+i;
+    card.innerHTML = '<span class="big-num">' + item.n + '</span>' +
+      '<div class="dots">' + dotsHTML(item.n, 20) + '</div>' +
+      '<span class="word">' + item.word + '</span>';
+    card.onclick = () => { speakNum(item, 0.72); card.classList.add('playing'); addScore(1); setTimeout(() => card.classList.remove('playing'), 700); };
+    g.appendChild(card);
+  });
+}
+
+function playAll(slow) {
+  const rate = slow ? 0.42 : 0.72;
+  speakQueueWithHighlight(
+    numData,
+    (item) => item.word,
+    (item, i) => document.getElementById('nc-'+i),
+    rate
+  );
+}
+
+// ===================== TAB 2: FLASHCARD =====================
+let fcIdx = 0;
+let fcFlipped = false;
+function updateFC() {
+  const item = numData[fcIdx];
+  document.getElementById('fcNum').textContent = item.n;
+  document.getElementById('fcDots').innerHTML = dotsHTML(item.n, 20, 'card-dot');
+  document.getElementById('fcWord').textContent = item.word;
+  document.getElementById('fcProgress').textContent = 'Card ' + (fcIdx+1) + ' / ' + numData.length;
+  document.getElementById('fcBar').style.width = ((fcIdx+1)/numData.length*100)+'%';
+  const fc = document.getElementById('flashcard');
+  fc.classList.remove('flipped');
+  fcFlipped = false;
+}
+function flipCard() {
+  const fc = document.getElementById('flashcard');
+  fc.classList.toggle('flipped');
+  fcFlipped = !fcFlipped;
+  if (fcFlipped) { speakNum(numData[fcIdx]); addScore(1); }
+}
+function fcNav(dir) {
+  fcIdx = (fcIdx + dir + numData.length) % numData.length;
+  updateFC();
+}
+
+// ===================== TAB 3: COUNT THE DOTS =====================
+let countScore = 0, countQ = 0, countList = [], countAnswered = false;
+
+function initCount() {
+  countScore = 0; countQ = 0; countAnswered = false;
+  document.getElementById('countScore').textContent = '0';
+  // limit to 1-12 for countability
+  countList = shuffle(numData.filter(n => n.n <= 12));
+  nextCount();
+}
+
+function nextCount() {
+  if (countQ >= 10) { document.getElementById('countFeedback').textContent = '🏆 Done! ' + countScore + '/10'; return; }
+  countAnswered = false;
+  const target = countList[countQ % countList.length];
+  const fruit = FRUITS[Math.floor(Math.random()*FRUITS.length)];
+  const emojiDiv = document.getElementById('countEmojis');
+  emojiDiv.innerHTML = '';
+  for (let i = 0; i < target.n; i++) {
+    const s = document.createElement('span');
+    s.className = 'ce';
+    s.textContent = fruit;
+    s.style.animationDelay = (i*0.05) + 's';
+    emojiDiv.appendChild(s);
+  }
+  document.getElementById('countFeedback').textContent = '';
+  speakRaw('Count! How many?', 0.8);
+
+  // build options
+  const opts = new Set([target.n]);
+  while (opts.size < 5) {
+    let r = target.n + Math.floor(Math.random()*5) - 2;
+    if (r >= 1 && r <= 20) opts.add(r);
+  }
+  const optsArr = shuffle([...opts]);
+  const optDiv = document.getElementById('countOptions');
+  optDiv.innerHTML = '';
+  optsArr.forEach(v => {
+    const b = document.createElement('button');
+    b.className = 'count-opt';
+    b.textContent = v;
+    b.onclick = () => {
+      if (countAnswered) return;
+      countAnswered = true;
+      recordResult('Count', 'count-' + countQ, v === target.n, String(v), String(target.n), 'How many?');
+      if (v === target.n) {
+        b.classList.add('correct');
+        document.getElementById('countFeedback').textContent = '✅ Correct! 🎉';
+        countScore++; countQ++; addScore(2); celebrate(1);
+        document.getElementById('countScore').textContent = countScore;
+        setTimeout(nextCount, 1000);
+      } else {
+        b.classList.add('wrong');
+        document.getElementById('countFeedback').textContent = '❌ Try again!';
+        setTimeout(() => { b.classList.remove('wrong'); countAnswered = false; }, 700);
+      }
+    };
+    optDiv.appendChild(b);
+  });
+}
+
+function replayCount() {
+  speakRaw('Count! How many?', 0.8);
+}
+
+// ===================== TAB 4: BALLOON POP =====================
+let balloonScore = 0, balloonQ = 0, balloonNums = [];
+
+function initBalloon() {
+  balloonScore = 0; balloonQ = 0;
+  document.getElementById('balloonScore').textContent = '0';
+  balloonNums = shuffle(numData);
+  nextBalloonQ();
+}
+
+function nextBalloonQ() {
+  if (balloonQ >= 10) { showBalloonWin(); return; }
+  const area = document.getElementById('balloonArea');
+  area.querySelectorAll('.balloon').forEach(b => b.remove());
+  const target = balloonNums[balloonQ % numData.length];
+  balloonTarget = target;
+  document.getElementById('bqNum').textContent = target.n;
+  speakNum(target, 0.72);
+  const distractors = shuffle(numData.filter(v => v.n !== target.n)).slice(0, 4);
+  const all = shuffle([target, ...distractors]);
+  const cols = [14, 28, 44, 60, 76];
+  all.forEach((v, i) => {
+    const b = document.createElement('div');
+    b.className = 'balloon';
+    const topPos = 30 + Math.random() * 40;
+    b.style.cssText = 'left:' + (cols[i % cols.length] + (Math.random()-0.5)*6) + '%;top:' + topPos + '%;animation-duration:' + (2.5+Math.random()*1.5) + 's;animation-delay:' + (Math.random()*0.5) + 's;';
+    b.innerHTML = '<span class="b-body">🎈</span><span class="b-label">' + v.n + '</span>';
+    b.onclick = () => popBalloon(b, v.n === target.n, v);
+    area.appendChild(b);
+  });
+}
+
+function popBalloon(el, correct, item) {
+  speakNum(item, 0.72);
+  el.classList.add('popped');
+  recordResult('Balloon Pop', 'balloon-' + balloonQ, correct, String(item.n), balloonTarget ? String(balloonTarget.n) : '', 'Find number: ' + (balloonTarget ? balloonTarget.n : ''));
+  if (correct) {
+    balloonScore++; balloonQ++;
+    document.getElementById('balloonScore').textContent = balloonScore;
+    addScore(2); celebrate(1);
+    setTimeout(nextBalloonQ, 700);
+  } else {
+    setTimeout(() => el.classList.remove('popped'), 500);
+  }
+}
+
+function showBalloonWin() {
+  document.getElementById('balloonArea').innerHTML = '<div style="text-align:center;padding:60px 20px;"><div style="font-size:4rem;">🎉</div><div style="font-size:1.5rem;font-weight:800;margin-top:12px;">Amazing! ' + balloonScore + '/10 correct!</div></div>';
+  celebrate(6);
+}
+
+// ===================== TAB 5: TAP THE NUMBER =====================
+let ntScore = 0, ntQ = 0, ntNums = [], ntAnswered = false, ntTarget = null;
+
+function initNumtap() {
+  ntScore = 0; ntQ = 0; ntAnswered = false;
+  document.getElementById('ntScore').textContent = '0';
+  ntNums = shuffle(numData);
+  nextNumtap();
+}
+
+function nextNumtap() {
+  if (ntQ >= 10) { document.getElementById('ntFeedback').textContent = '🏆 Done! ' + ntScore + '/10'; return; }
+  ntAnswered = false;
+  const target = ntNums[ntQ % numData.length];
+  ntTarget = target;
+  document.getElementById('ntFeedback').textContent = '';
+  speakNum(target, 0.72);
+  const distractors = shuffle(numData.filter(v => v.n !== target.n)).slice(0, 9);
+  const all = shuffle([target, ...distractors]).slice(0, 10);
+  const grid = document.getElementById('numtapGrid');
+  grid.innerHTML = '';
+  all.forEach((v) => {
+    const d = document.createElement('div');
+    d.className = 'numtap-item';
+    d.innerHTML = '<div class="ni-num">' + v.n + '</div>';
+    d.onclick = () => {
+      if (ntAnswered) return;
+      ntAnswered = true;
+      recordResult('Tap the Number', 'numtap-' + ntQ, v.n === target.n, String(v.n), String(target.n), 'Find number: ' + target.n);
+      if (v.n === target.n) {
+        d.classList.add('correct-ans');
+        document.getElementById('ntFeedback').textContent = '✅ Correct! 🎉';
+        ntScore++; ntQ++; addScore(2); celebrate(1);
+        document.getElementById('ntScore').textContent = ntScore;
+        setTimeout(nextNumtap, 900);
+      } else {
+        d.classList.add('wrong-ans');
+        document.getElementById('ntFeedback').textContent = '❌ Try again!';
+        setTimeout(() => { d.classList.remove('wrong-ans'); ntAnswered = false; }, 700);
+      }
+    };
+    grid.appendChild(d);
+  });
+}
+
+function replayNumtap() {
+  if (ntTarget) speakNum(ntTarget, 0.72);
+}
+
+// ===================== TAB 6: MATCH (number <-> dots) =====================
+let matchSel = { col: null, idx: null, el: null, n: null };
+let matchedPairs = 0;
+
+function initMatch() {
+  matchedPairs = 0;
+  matchSel = { col: null, idx: null, el: null, n: null };
+  document.getElementById('matchResult').style.display = 'none';
+  // limit to 1-10 for dot readability
+  const items = shuffle(numData.filter(n => n.n <= 10)).slice(0, 6);
+  const leftOrder = shuffle(items);
+  const rightOrder = shuffle(items);
+  const area = document.getElementById('matchArea');
+  area.innerHTML = '<div class="match-col" id="matchLeft"></div><div class="match-col" id="matchRight"></div>';
+  const L = document.getElementById('matchLeft');
+  const R = document.getElementById('matchRight');
+  leftOrder.forEach((v, i) => {
+    const d = document.createElement('div');
+    d.className = 'match-item';
+    d.dataset.n = v.n; d.dataset.col = 'left'; d.dataset.idx = i;
+    d.textContent = v.n;
+    d.onclick = () => matchClick('left', i, v.n, d, v);
+    L.appendChild(d);
+  });
+  rightOrder.forEach((v, i) => {
+    const d = document.createElement('div');
+    d.className = 'match-item';
+    d.dataset.n = v.n; d.dataset.col = 'right'; d.dataset.idx = i;
+    d.innerHTML = '<div class="match-dots">' + dotsHTML(v.n, 10) + '</div>';
+    d.onclick = () => matchClick('right', i, v.n, d, v);
+    R.appendChild(d);
+  });
+}
+
+function matchClick(col, idx, n, el, item) {
+  if (el.classList.contains('matched')) return;
+  if (matchSel.col === col) { clearMatchSel(); }
+  if (matchSel.col === null) {
+    el.classList.add('selected');
+    matchSel = { col: col, idx: idx, n: n, el: el };
+    speakNum(item, 0.72);
+    return;
+  }
+  if (matchSel.col !== col) {
+    if (matchSel.n === n) {
+      el.classList.add('matched'); matchSel.el.classList.add('matched');
+      matchSel.el.classList.remove('selected');
+      matchedPairs++;
+      recordResult('Match', 'match-' + n, true, String(n), String(n), 'Match: ' + n);
+      addScore(3);
+      celebrate(1);
+      if (matchedPairs === 6) {
+        setTimeout(() => {
+          const r = document.getElementById('matchResult');
+          r.style.display = 'block';
+          r.innerHTML = '🎉 Perfect! All matched! ⭐⭐⭐';
+          celebrate(5);
+        }, 400);
+      }
+    } else {
+      el.classList.add('wrong'); matchSel.el.classList.add('wrong');
+      recordResult('Match', 'match-' + matchSel.n, false, String(n), String(matchSel.n), 'Match: ' + matchSel.n);
+      recordResult('Match', 'match-' + n, false, String(matchSel.n), String(n), 'Match: ' + n);
+      setTimeout(() => { el.classList.remove('wrong','selected'); matchSel.el.classList.remove('wrong','selected'); }, 600);
+    }
+    clearMatchSel();
+  }
+}
+function clearMatchSel() { if (matchSel.el) matchSel.el.classList.remove('selected'); matchSel = { col:null, idx:null, el:null, n:null }; }
+
+// ===================== TAB 7: MORE OR LESS =====================
+let compareScore = 0, compareQ = 0, compareAnswered = false, compareAskMore = true;
+
+function initCompare() {
+  compareScore = 0; compareQ = 0;
+  document.getElementById('compareScore').textContent = '0';
+  nextCompare();
+}
+
+function nextCompare() {
+  if (compareQ >= 10) { document.getElementById('compareFeedback').textContent = '🏆 Done! ' + compareScore + '/10'; return; }
+  compareAnswered = false;
+  const askMore = Math.random() < 0.5;
+  compareAskMore = askMore;
+  document.getElementById('compareQ').textContent = askMore ? 'Which has MORE? 🔼' : 'Which has LESS? 🔽';
+  speakRaw(askMore ? 'Which has more?' : 'Which has less?', 0.75);
+
+  // pick two different numbers 1-10
+  let a = Math.floor(Math.random()*10)+1;
+  let b;
+  do { b = Math.floor(Math.random()*10)+1; } while (b === a);
+
+  const fruit = FRUITS[Math.floor(Math.random()*FRUITS.length)];
+  const correctVal = askMore ? Math.max(a,b) : Math.min(a,b);
+
+  const row = document.getElementById('compareRow');
+  row.innerHTML = '';
+  [a, b].forEach(val => {
+    const box = document.createElement('div');
+    box.className = 'compare-box';
+    let dotsHtml = '';
+    for (let i = 0; i < val; i++) dotsHtml += '<span class="ce">' + fruit + '</span>';
+    box.innerHTML = '<div class="ce-row">' + dotsHtml + '</div><div class="cb-num">' + val + '</div>';
+    box.onclick = () => {
+      if (compareAnswered) return;
+      compareAnswered = true;
+      recordResult('More or Less', 'compare-' + compareQ, val === correctVal, String(val), String(correctVal), askMore ? 'Which has MORE?' : 'Which has LESS?');
+      if (val === correctVal) {
+        box.classList.add('correct-ans');
+        document.getElementById('compareFeedback').textContent = '✅ Correct! 🎉';
+        compareScore++; compareQ++; addScore(2); celebrate(1);
+        document.getElementById('compareScore').textContent = compareScore;
+        setTimeout(nextCompare, 1000);
+      } else {
+        box.classList.add('wrong-ans');
+        document.getElementById('compareFeedback').textContent = '❌ Try again!';
+        setTimeout(() => { box.classList.remove('wrong-ans'); compareAnswered = false; }, 700);
+      }
+    };
+    row.appendChild(box);
+  });
+  document.getElementById('compareFeedback').textContent = '';
+}
+
+function replayCompare() {
+  speakRaw(compareAskMore ? 'Which has more?' : 'Which has less?', 0.75);
+}
+
+// ===================== TAB 8: MEMORY GAME =====================
+let memFlipped = [], memMatched = [], memMoves = 0, memLock = false;
+
+function initMemory() {
+  memFlipped = []; memMatched = []; memMoves = 0; memLock = false;
+  document.getElementById('memMoves').textContent = '0';
+  document.getElementById('memPairs').textContent = '0';
+  // limit to 1-10 for dot readability
+  const items = shuffle(numData.filter(n => n.n <= 10)).slice(0, 8);
+  let cards = [];
+  items.forEach((item, i) => {
+    cards.push({ id: i, type: 'num', item: item });
+    cards.push({ id: i, type: 'dots', item: item });
+  });
+  cards = shuffle(cards);
+  const grid = document.getElementById('memoryGrid');
+  grid.innerHTML = '';
+  cards.forEach((c) => {
+    const d = document.createElement('div');
+    d.className = 'memory-card';
+    d.dataset.id = c.id;
+    const backContent = c.type === 'num'
+      ? c.item.n
+      : '<div class="memory-back dotsface">' + dotsHTML(c.item.n, 10) + '</div>';
+    const backClass = c.type === 'dots' ? 'dotsface' : '';
+    d.innerHTML = '<div class="memory-inner">' +
+      '<div class="memory-face memory-front">❓</div>' +
+      (c.type === 'num'
+        ? '<div class="memory-face memory-back">' + c.item.n + '</div>'
+        : '<div class="memory-face memory-back dotsface">' + dotsHTML(c.item.n, 10) + '</div>') +
+      '</div>';
+    d.onclick = () => memClick(d, c);
+    grid.appendChild(d);
+  });
+}
+
+function memClick(el, card) {
+  if (memLock) return;
+  if (el.classList.contains('flipped') || el.classList.contains('matched')) return;
+  el.classList.add('flipped');
+  speakNum(card.item, 0.72);
+  memFlipped.push({ el: el, card: card });
+  if (memFlipped.length === 2) {
+    memLock = true;
+    memMoves++;
+    document.getElementById('memMoves').textContent = memMoves;
+    const a = memFlipped[0], b = memFlipped[1];
+    if (a.card.id === b.card.id) {
+      a.el.classList.add('matched'); b.el.classList.add('matched');
+      memMatched.push(a.card.id);
+      document.getElementById('memPairs').textContent = memMatched.length;
+      recordResult('Memory', 'memory-' + a.card.id, true, String(a.card.item.n), String(a.card.item.n), 'Memory pair: ' + a.card.item.n);
+      addScore(3); celebrate(1);
+      memFlipped = []; memLock = false;
+      if (memMatched.length === 8) {
+        setTimeout(() => celebrate(6), 300);
+      }
+    } else {
+      setTimeout(() => {
+        a.el.classList.remove('flipped'); b.el.classList.remove('flipped');
+        memFlipped = []; memLock = false;
+      }, 900);
+    }
+  }
+}
+
+// ===================== TAB 9: NUMBER ORDER =====================
+let orderSeq = [], orderSlots = [];
+
+function initOrder() {
+  document.getElementById('orderFeedback').textContent = '';
+  const startIdx = Math.floor(Math.random() * (numData.length - 4));
+  orderSeq = numData.slice(startIdx, startIdx + 5);
+  orderSlots = Array(5).fill(null);
+
+  const slotsDiv = document.getElementById('orderSlots');
+  slotsDiv.innerHTML = '';
+  for (let i = 0; i < 5; i++) {
+    const s = document.createElement('div');
+    s.className = 'order-slot';
+    s.id = 'oslot-'+i;
+    slotsDiv.appendChild(s);
+  }
+
+  const shuffledTiles = shuffle(orderSeq);
+  const bankDiv = document.getElementById('orderBank');
+  bankDiv.innerHTML = '';
+  shuffledTiles.forEach((item, i) => {
+    const t = document.createElement('div');
+    t.className = 'order-tile';
+    t.id = 'otile-'+i;
+    t.textContent = item.n;
+    t.onclick = () => placeOrderTile(item, t);
+    bankDiv.appendChild(t);
+  });
+}
+
+function playOrderSequence() {
+  speakQueue(orderSeq.map(item => item.word), 0.7);
+}
+
+function placeOrderTile(item, tileEl) {
+  if (tileEl.classList.contains('used')) return;
+  const emptyIdx = orderSlots.findIndex(s => s === null);
+  if (emptyIdx === -1) return;
+  orderSlots[emptyIdx] = item.n;
+  const slotEl = document.getElementById('oslot-'+emptyIdx);
+  slotEl.textContent = item.n;
+  slotEl.classList.add('filled');
+  tileEl.classList.add('used');
+  speakNum(item, 0.72);
+
+  if (orderSlots.every(s => s !== null)) {
+    checkOrder();
+  }
+}
+
+function checkOrder() {
+  const correctSeq = orderSeq.map(i => i.n);
+  const userSeq = orderSlots;
+  const isCorrect = JSON.stringify(correctSeq) === JSON.stringify(userSeq);
+  recordResult('Number Order', 'order-1', isCorrect, userSeq.join(','), correctSeq.join(','), 'Put numbers in order');
+  const fb = document.getElementById('orderFeedback');
+  if (isCorrect) {
+    fb.innerHTML = '✅ Great job! 🎉';
+    fb.style.color = 'var(--green-dark)';
+    addScore(5); celebrate(2);
+    setTimeout(initOrder, 1200);
+  } else {
+    fb.innerHTML = '❌ Try again!';
+    fb.style.color = 'var(--red-dark)';
+    setTimeout(() => {
+      orderSlots = Array(5).fill(null);
+      document.querySelectorAll('.order-slot').forEach(s => { s.textContent=''; s.classList.remove('filled'); });
+      document.querySelectorAll('.order-tile').forEach(t => t.classList.remove('used'));
+      fb.textContent = '';
+    }, 900);
+  }
+}
+
+// ===================== TAB 10: TRACE IT =====================
+let traceIdx = 0, traceCtx = null, traceDrawing = false;
+
+function setupTraceCanvas() {
+  const canvas = document.getElementById('traceCanvas');
+  if (!canvas) return;
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width || 320;
+  canvas.height = rect.height || 320;
+  traceCtx = canvas.getContext('2d');
+  drawTraceGuide();
+
+  canvas.onpointerdown = (e) => { traceDrawing = true; drawDot(e); };
+  canvas.onpointermove = (e) => { if (traceDrawing) drawDot(e); };
+  canvas.onpointerup = () => { traceDrawing = false; };
+  canvas.onpointerleave = () => { traceDrawing = false; };
+}
+
+function drawTraceGuide() {
+  if (!traceCtx) return;
+  const canvas = document.getElementById('traceCanvas');
+  traceCtx.clearRect(0, 0, canvas.width, canvas.height);
+  traceCtx.save();
+  const item = numData[traceIdx];
+  const fontSize = item.n >= 10 ? canvas.height * 0.5 : canvas.height * 0.7;
+  traceCtx.font = 'bold ' + fontSize + 'px Arial';
+  traceCtx.fillStyle = 'rgba(77, 150, 255, 0.18)';
+  traceCtx.textAlign = 'center';
+  traceCtx.textBaseline = 'middle';
+  traceCtx.fillText(item.n, canvas.width/2, canvas.height/2);
+  traceCtx.restore();
+}
+
+function drawDot(e) {
+  const canvas = document.getElementById('traceCanvas');
+  const rect = canvas.getBoundingClientRect();
+  const x = (e.clientX - rect.left) * (canvas.width / rect.width);
+  const y = (e.clientY - rect.top) * (canvas.height / rect.height);
+  traceCtx.fillStyle = '#FF6B9D';
+  traceCtx.beginPath();
+  traceCtx.arc(x, y, 8, 0, Math.PI*2);
+  traceCtx.fill();
+}
+
+function clearTrace() {
+  drawTraceGuide();
+}
+
+function traceNav(dir) {
+  traceIdx = (traceIdx + dir + numData.length) % numData.length;
+  updateTrace();
+}
+
+function updateTrace() {
+  const item = numData[traceIdx];
+  document.getElementById('traceDisplay').textContent = item.n;
+  document.getElementById('traceDots').innerHTML = dotsHTML(item.n, 20);
+  document.getElementById('traceWord').textContent = item.word;
+  speakNum(item, 0.72);
+  drawTraceGuide();
+}
+
+// ===================== TAB 11: QUIZ =====================
+const quizQuestions = [];
+// listen and pick number
+numData.forEach(v => {
+  quizQuestions.push({
+    type: 'hear2num',
+    correct: v.n,
+    options: () => shuffle([v.n, ...shuffle(numData.filter(x=>x.n!==v.n)).slice(0,3).map(x=>x.n)]),
+    sound: v.word
+  });
+});
+// dots to number (limit 1-12)
+numData.filter(n => n.n <= 12).forEach(v => {
+  quizQuestions.push({
+    type: 'dots2num',
+    dots: v.n,
+    correct: v.n,
+    options: () => shuffle([v.n, ...shuffle(numData.filter(x=>x.n!==v.n)).slice(0,3).map(x=>x.n)])
+  });
+});
+// number to next number (what comes after)
+numData.filter(n => n.n <= 19).forEach(v => {
+  const next = v.n + 1;
+  quizQuestions.push({
+    type: 'whatnext',
+    shown: v.n,
+    correct: next,
+    options: () => shuffle([next, ...shuffle(numData.filter(x=>x.n!==next)).slice(0,3).map(x=>x.n)])
+  });
+});
+
+let quizList = [], quizCurrent = 0, quizQScore = 0, quizAnswered = false;
+
+function initQuiz() {
+  quizList = shuffle(quizQuestions).slice(0, 12);
+  quizCurrent = 0; quizQScore = 0; quizAnswered = false;
+  renderQuiz();
+}
+
+function renderQuiz() {
+  const area = document.getElementById('quizArea');
+  if (quizCurrent >= quizList.length) {
+    const pct = Math.round(quizQScore/quizList.length*100);
+    area.innerHTML = '<div class="quiz-result">' +
+      '<div style="font-size:3rem;">🏆</div>' +
+      '<div class="score-big">' + quizQScore + '/' + quizList.length + '</div>' +
+      '<div class="msg">' + (pct>=80?'🌟 Excellent!':pct>=60?'👍 Good job!':'💪 Keep practicing!') + '</div>' +
+      '<div style="color:#888;font-size:0.9rem;">' + pct + '% correct</div>' +
+      '<button class="quiz-restart" onclick="initQuiz()">🔄 Play Again</button>' +
+      '</div>';
+    celebrate(4); return;
+  }
+  quizAnswered = false;
+  const q = quizList[quizCurrent];
+  const opts = q.options();
+
+  let questionDisplay;
+  if (q.type === 'hear2num') {
+    questionDisplay = '<div style="text-align:center;font-size:1.3rem;font-weight:700;">🔊 Listen and pick the number!<button class="hear-btn" onclick="speakRaw(\'' + q.sound + '\', 0.8)">🔊 Hear again</button></div>';
+    setTimeout(() => speakRaw(q.sound, 0.8), 300);
+  } else if (q.type === 'dots2num') {
+    questionDisplay = '<div class="quiz-q-dots">' + dotsHTML(q.dots, 12) + '</div><div class="quiz-q-text">How many?</div>';
+  } else {
+    questionDisplay = '<span class="quiz-q-big">' + q.shown + '</span><div class="quiz-q-text">What comes next?</div>';
+  }
+
+  area.innerHTML = '<div class="quiz-q">' +
+    '<div class="quiz-q-num">Question ' + (quizCurrent+1) + ' of ' + quizList.length + '</div>' +
+    '<div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:' + (quizCurrent/quizList.length*100) + '%"></div></div>' +
+    questionDisplay +
+    '</div>' +
+    '<div class="quiz-options">' +
+    opts.map(o => '<button class="quiz-opt" data-v="' + o + '" data-c="' + q.correct + '">' + o + '</button>').join('') +
+    '</div>';
+  document.querySelectorAll('.quiz-opt').forEach(b => {
+    b.addEventListener('click', () => answerQuiz(b, b.dataset.v, b.dataset.c));
+  });
+}
+
+function answerQuiz(btn, chosen, correct) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+  document.querySelectorAll('.quiz-opt').forEach(b => b.style.pointerEvents = 'none');
+  recordResult('Quiz', 'quiz-' + quizCurrent, chosen === correct, String(chosen), String(correct), 'Question ' + (quizCurrent+1));
+  if (chosen === correct) {
+    btn.classList.add('correct'); quizQScore++; addScore(3); celebrate(1);
+    const item = numData.find(x => String(x.n) === String(chosen));
+    speakRaw(item ? item.word : chosen, 0.8);
+  } else {
+    btn.classList.add('incorrect');
+    document.querySelectorAll('.quiz-opt').forEach(b => { if (b.dataset.v === correct) b.classList.add('correct'); });
+    const item = numData.find(x => String(x.n) === String(correct));
+    speakRaw(item ? item.word : correct, 0.8);
+  }
+  quizCurrent++;
+  setTimeout(renderQuiz, 1200);
+}
+
+function celebrate(intensity) {
+  const cel = document.getElementById('celebration');
+  const colors = ['#FFD93D','#6BCB77','#4D96FF','#FF6B9D','#9B5DE5','#FF9F43'];
+  const count = intensity * 8;
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('div');
+    p.className = 'confetti-piece';
+    p.style.cssText = 'left:' + (Math.random()*100) + '%;background:' + colors[Math.floor(Math.random()*colors.length)] + ';animation-duration:' + (1.5+Math.random()*1.5) + 's;animation-delay:' + (Math.random()*0.5) + 's;border-radius:' + (Math.random()>0.5?'50%':'2px') + ';';
+    cel.appendChild(p);
+    setTimeout(() => p.remove(), 3000);
+  }
+}
+
+buildNumGrid();
+updateFC();
+initCount();
+initBalloon();
+initNumtap();
+initMatch();
+initCompare();
+initMemory();
+initOrder();
+updateTrace();
+initQuiz();
+</script>
+<script src="tracker.js"></script>
+<script>
+DTTracker.ensureStudentName();
+DTTracker.showSubmitButton('prea1_numbers_games', 'Pre-A1 - Numbers Games', collectSessionSections);
+</script>
+</body>
+</html>
